@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Success</title></head><body style="font-family:system-ui;padding:20px">
+  <h1>You're Now a Premium Guardian</h1>
+  <p>Your Premium features are active. Thank you.</p>
+  <button onclick="chrome.storage.sync.set({isPremium:true,trialActive:false}, ()=>alert('Activated'))">Activate Locally</button>
+  <button onclick="location.href='settings.html'">Go to Settings</button>
+</body></html>

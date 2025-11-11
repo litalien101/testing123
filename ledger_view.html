@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sabotage Ledger - Guardian Override</title>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;padding:16px;max-width:900px}
+  .event{padding:10px;border-bottom:1px solid #e9e9e9}
+  button{padding:8px 10px;border-radius:6px;border:none;background:#0d6efd;color:white;cursor:pointer}
+</style>
+</head>
+<body>
+  <h1>Sabotage Ledger</h1>
+  <div id="logContainer"></div>
+  <div style="margin-top:12px">
+    <button id="downloadBtn">Download Ledger (CSV)</button>
+  </div>
+  <h3 style="margin-top:18px">Weekly Emotional Fatigue</h3>
+  <div id="fatigueSummary">Loading…</div>
+
+<script src="fatigue.js"></script>
+<script>
+  // Render the ledger entries from chrome.storage.local
+  chrome.storage.local.get(['sabotageLog'], (data) => {
+    const log = data && data.sabotageLog ? data.sabotageLog : [];
+    const container = document.getElementById('logContainer');
+    container.innerHTML = '';
+    if (log.length === 0) container.innerHTML = '<div class="event">No events yet.</div>';
+    log.forEach(ev => {
+      const div = document.createElement('div');
+      div.className = 'event';
+      div.innerHTML = '<strong>Site:</strong> ' + ev.site + '<br>' +
+                      '<strong>Clause:</strong> ' + ev.clauseText + '<br>' +
+                      '<strong>Impact:</strong> ' + (ev.impact||'Unknown') + '<br>' +
+                      '<strong>Time:</strong> ' + new Date(ev.timestamp).toLocaleString();
+      container.appendChild(div);
+    });
+  });
+
+  // CSV download
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    chrome.storage.local.get(['sabotageLog'], (data) => {
+      const log = data && data.sabotageLog ? data.sabotageLog : [];
+      const rows = [['Site','Clause','Impact','Timestamp']].concat(log.map(e => [e.site, e.clauseText.replace(/"/g,'""'), e.impact || '', e.timestamp]));
+      const csv = rows.map(r => r.map(cell => '"' + (cell||'') + '"').join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'sabotage_ledger.csv'; a.click();
+      URL.revokeObjectURL(url);
+    });
+  });
+
+  // Load fatigue summary using exposed helper from fatigue.js
+  if (window.__guardian_computeFatigueScore) {
+    window.__guardian_computeFatigueScore((summary) => {
+      const d = document.getElementById('fatigueSummary');
+      d.innerHTML = '<strong>High:</strong> ' + summary.high + ' <strong>Moderate:</strong> ' + summary.moderate + ' <strong>Mild:</strong> ' + summary.mild + '<br><strong>Score:</strong> ' + summary.score;
+    });
+  } else {
+    document.getElementById('fatigueSummary').innerText = 'Fatigue module not available.';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'></head><body style="font-family:system-ui;padding:20px">
+  <h1>Before You Cancel…</h1>
+  <p>If you need a break, try pausing for 30 days instead of cancelling.</p>
+  <button onclick="pausePremium()">Pause for 30 days</button>
+  <button onclick="cancelPremium()">Cancel Subscription</button>
+
+<script>
+function pausePremium(){
+  const pauseUntil = Date.now() + 30 * 24 * 60 * 60 * 1000;
+  chrome.storage.sync.set({ isPremium:false, pauseUntil }, ()=> alert('Paused for 30 days'));
+}
+function cancelPremium(){
+  chrome.storage.sync.set({ isPremium:false, trialActive:false }, ()=> alert('Subscription cancelled'));
+}
+</script>
+</body></html>

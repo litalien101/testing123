@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Guardian Override",
+  "version": "0.2.0",
+  "description": "Emotionally intelligent redirect clauses for families (MVP). Now with admin/device gating and programmatic script injection.",
+  "permissions": [
+    "tabs",
+    "scripting",
+    "storage",
+    "notifications",
+    "alarms"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  }
+}

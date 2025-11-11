@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guardian Settings</title>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;padding:16px;max-width:900px}
+  label{display:block;margin:8px 0}
+  select,input,textarea{padding:8px;border-radius:6px;border:1px solid #ddd;width:100%;box-sizing:border-box}
+  button{padding:8px 10px;border-radius:6px;border:none;background:#0d6efd;color:white;cursor:pointer;margin-top:8px}
+  #clausePreviewBox{background:#fff3cd;padding:10px;border-radius:6px;border:1px solid #ffeeba;color:#3b3b3b;margin-top:8px}
+</style>
+</head>
+<body>
+  <h1>Guardian Settings</h1>
+  <h3>Clause Pack</h3>
+  <select id="clausePack">
+    <option value="default">Default</option>
+    <option value="trauma">Trauma-Informed</option>
+    <option value="influencer">Influencer</option>
+    <option value="faith">Faith-Based</option>
+  </select>
+
+  <h3>Redirect Destination</h3>
+  <input id="redirectUrl" placeholder="https://your-safe-page.example" />
+
+  <h3>Fatigue Settings</h3>
+  <label>Fatigue Threshold (points): <input type="number" id="fatigueThreshold" min="1" max="999" /></label>
+  <label><input type="checkbox" id="lockoutEnabled" /> Enable 24hr Lockout When Threshold Exceeded</label>
+
+  <h3>Live Clause Preview</h3>
+  <div id="clausePreviewBox">This space might not honor your dignity. Want to redirect?</div>
+
+  <button id="saveSettings">Save Settings</button>
+
+  <h3 style="margin-top:18px">Weekly Emotional Fatigue</h3>
+  <div id="fatigueSummary">Loading…</div>
+
+<script src="fatigue.js"></script>
+<script>
+  // Load saved settings on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    chrome.storage.sync.get(['selectedPack','redirectUrl','fatigueThreshold','lockoutEnabled'], (data) => {
+      document.getElementById('clausePack').value = data.selectedPack || 'default';
+      document.getElementById('redirectUrl').value = data.redirectUrl || '';
+      document.getElementById('fatigueThreshold').value = data.fatigueThreshold || 15;
+      document.getElementById('lockoutEnabled').checked = !!data.lockoutEnabled;
+      updateClausePreview(document.getElementById('clausePack').value);
+    });
+
+    // populate fatigue summary
+    if (window.__guardian_computeFatigueScore) {
+      window.__guardian_computeFatigueScore((s) => {
+        document.getElementById('fatigueSummary').innerHTML = '<strong>High:</strong>' + s.high + ' <strong>Moderate:</strong>' + s.moderate + ' <strong>Mild:</strong>' + s.mild + '<br><strong>Score:</strong>' + s.score;
+      });
+    }
+  });
+
+  document.getElementById('clausePack').addEventListener('change', (e) => updateClausePreview(e.target.value));
+
+  function updateClausePreview(pack) {
+    const previews = {
+      default: "This space might not honor your dignity. Want to redirect?",
+      trauma: "This moment might reopen wounds. Let's choose safety.",
+      influencer: "Hey fam, this vibe's off. Let's bounce to better.",
+      faith: "This path may not reflect your values. Let's walk with grace."
+    };
+    document.getElementById('clausePreviewBox').innerText = previews[pack] || previews.default;
+  }
+
+  document.getElementById('saveSettings').addEventListener('click', () => {
+    const selectedPack = document.getElementById('clausePack').value;
+    const redirectUrl = document.getElementById('redirectUrl').value;
+    const fatigueThreshold = parseInt(document.getElementById('fatigueThreshold').value || '15', 10);
+    const lockoutEnabled = document.getElementById('lockoutEnabled').checked;
+
+    chrome.storage.sync.set({ selectedPack, redirectUrl, fatigueThreshold, lockoutEnabled }, () => {
+      alert('Settings saved.');
+    });
+  });
+</script>
+</body>
+</html>

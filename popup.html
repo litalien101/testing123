@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Guardian Override</title>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;padding:12px;width:360px}
+  h2{margin:0 0 8px 0}
+  label{display:block;margin:8px 0}
+  textarea{width:100%;box-sizing:border-box;border-radius:6px;padding:8px}
+  button{padding:8px 10px;border-radius:6px;border:none;cursor:pointer;background:#0d6efd;color:white}
+  .muted{font-size:12px;color:#666;margin-top:8px}
+  .admin{background:#f8f9fa;border:1px solid #e9ecef;padding:8px;border-radius:6px;margin-top:8px}
+</style>
+</head>
+<body>
+  <h2>Guardian Override</h2>
+
+  <label>
+    <input type="checkbox" id="overrideToggle" />
+    Enable Override Mode (local)
+  </label>
+
+  <label style="margin-top:8px">Preview Clause:</label>
+  <textarea id="clausePreview" rows="4">This space might not honor your dignity. Want to redirect?</textarea>
+
+  <label style="margin-top:8px">Redirect URL (optional)</label>
+  <input id="redirectUrl" type="text" placeholder="https://your-safe-page.example" style="width:100%;padding:8px;border-radius:6px;border:1px solid #ddd" />
+
+  <div style="margin-top:10px;display:flex;gap:8px">
+    <button id="saveBtn">Save</button>
+    <button id="trialBtn" style="background:#6c757d">Start 7-day Trial (local)</button>
+  </div>
+
+  <div class="muted">Settings sync across Chrome (if signed in).</div>
+
+  <div class="admin">
+    <h4>Server & Admin Controls</h4>
+    <label>Server URL (for premium validation)</label>
+    <input id="serverUrl" placeholder="https://guardian-backend.example.com" />
+    <label>User email (for server lookups)</label>
+    <input id="userEmail" placeholder="user@example.com" />
+    <label><input type="checkbox" id="adminMode" /> Admin-only mode (restrict to admin device IDs)</label>
+    <label>Admin Device IDs (comma-separated)</label>
+    <input id="adminDeviceIds" placeholder="uuid-1, uuid-2, ..." />
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button id="addCurrentAsAdmin" style="background:#198754">Add this device as admin</button>
+      <button id="copyUUID" style="background:#343a40">Copy device UUID</button>
+    </div>
+    <div style="margin-top:8px"><strong>Local Device UUID:</strong> <span id="deviceUUID">loading…</span></div>
+    <div style="margin-top:8px"><strong>Server Validation:</strong> <span id="serverStatus">n/a</span></div>
+  </div>
+
+<script src="popup.js"></script>
+</body>
+</html>
