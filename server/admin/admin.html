@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guardian Admin</title>
+  <link rel="stylesheet" href="/admin/static/admin.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">Guardian Admin</div>
+    <div class="top-actions">
+      <button id="createInviteBtnTop" class="btn btn-outline">Create Invite</button>
+      <button id="refreshBtn" class="btn">Refresh</button>
+      <button id="logoutBtn" class="btn btn-ghost">Logout</button>
+    </div>
+  </div>
+
+  <main class="container">
+    <section class="card" id="summaryCard" aria-live="polite">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="label">Total Users</div>
+          <div id="totalUsers" class="value">—</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">Active</div>
+          <div id="activeUsers" class="value">—</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">Premium %</div>
+          <div id="premiumPct" class="value">—</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">Verified %</div>
+          <div id="verifiedPct" class="value">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Users</h2>
+        <div class="tools">
+          <input id="searchInput" placeholder="Search by email or name" />
+        </div>
+      </div>
+
+      <div class="table-wrap" role="region" aria-label="Users table">
+        <table id="usersTable" class="users-table" aria-live="polite">
+          <thead>
+            <tr><th>Email</th><th>Name</th><th>Premium</th><th>Verified</th><th>Stripe ID</th><th>Actions</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Invite Modal -->
+  <div id="inviteModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-panel">
+      <h3>Create Invite</h3>
+      <label>Email<input id="modalEmail" type="email" /></label>
+      <label>Name (optional)<input id="modalName" /></label>
+      <div class="modal-actions">
+        <button id="modalCreate" class="btn">Create</button>
+        <button id="modalCancel" class="btn btn-ghost">Cancel</button>
+      </div>
+      <div id="modalResult" class="muted"></div>
+    </div>
+  </div>
+
+  <!-- Login overlay (shown when not authenticated) -->
+  <div id="loginOverlay" class="overlay" aria-hidden="true">
+    <div class="login-card card">
+      <div class="logo">Guardian</div>
+      <h3>Admin Login</h3>
+      <label>Admin Key<input id="adminKey" type="password" /></label>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="loginBtn" class="btn">Login</button>
+        <div id="loginMsg" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="/admin/static/admin.js"></script>
+</body>
+</html>
